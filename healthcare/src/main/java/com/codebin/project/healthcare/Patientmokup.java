@@ -13,9 +13,8 @@ public class Patientmokup {
 
 	List<Patient> patients = new ArrayList<Patient>();
 	
+	//for checking
 	public Patientmokup(){
-		
-
 		
 		Patient patient1 = new Patient("1","vindi","colombo","13244","12","see");
 		Patient patient2 = new Patient("2","kasun","galle","132234","22","redo");
@@ -23,8 +22,10 @@ public class Patientmokup {
 		
 		patients = Arrays.asList(patient1,patient2,patient3);
 		
-		
-	}
+		}
+	//
+	
+	//retrive patient details from database
 	
 	public List<Patient> getPatients() throws SQLException{
 		
@@ -44,6 +45,7 @@ public class Patientmokup {
 			
 			patients.add(pat);
 		}
+		
 		return patients;
 	
 	
@@ -51,12 +53,11 @@ public class Patientmokup {
 	
 	/*
 	public Patient getPatient(String pname) {
-		
 	return patients.stream().filter(p -> p.getPname().equals(pname)).findAny().orElse(null);
-		
 	} 
-	
 	*/
+	
+	//inserting patient details to database
 	
 	public void createpatient(Patient patient) throws Exception{
 		
@@ -73,26 +74,49 @@ public class Patientmokup {
 	}
 	
 	
-	public void updatepatient(Patient patient) throws Exception{
-		
-		 PreparedStatement ps = getConnection()
-				 .prepareStatement("update patient set pid=?,paddress=?,pmobile=?,page=?,pwd=? where pname=?");
-		ps.setString(1, patient.getPid());
-		ps.setString(2, patient.getPname());
-		ps.setString(3, patient.getPaddress());
-		ps.setString(4, patient.getPmobile());
-		ps.setString(5, patient.getPage());
-		ps.setString(6, patient.getPwd());
-		
-			
-		int count = ps.executeUpdate();
-			
-			System.out.println("Updated Count :"+count);
-			
-		}
-		
-		//System.out.println("Update Count :" +count +count +count +count +count +count);
-		
+	//updating patient details from the databse
+	
+	public String updatepatient(Patient patient)
+	 {
+		String output = "";
+	try
+	 {
+		Connection con = getConnection();
+	 if (con == null)
+	 {
+		 return "Error while connecting to the database for updating."; }
+	 
+	 String query = "UPDATE patient SET pid=?,pname=?,paddress=?,pmobile=?,pwd=? WHERE pid=?";
+	 PreparedStatement preparedStmt = con.prepareStatement(query);
+	 
+	 // binding values
+	 preparedStmt.setString(1, patient.getPid());
+	 preparedStmt.setString(2, patient.getPname());
+	 preparedStmt.setString(3, patient.getPaddress());
+	 preparedStmt.setString(4, patient.getPmobile());
+	 preparedStmt.setString(5, patient.getPage());
+	 preparedStmt.setString(6, patient.getPwd());
+	 
+	 // execute the statement
+	 preparedStmt.execute();
+	 con.close();
+	 
+	 output = "Updated successfully";
+	 }
+	 
+	 catch (Exception e)
+	 {
+	 
+		 output = "Error while updating the item.";
+	     System.err.println(e.getMessage());
+	 
+	 }
+	 
+	 return output;
+	 
+	 }
+	
+		//delete patient from the database
 		
 		public void droppatient(String name) throws Exception{
 			
@@ -105,7 +129,7 @@ public class Patientmokup {
 	}
 	
 	
-	
+	//databse connection
 	
 public Connection getConnection() throws SQLException{
 		
